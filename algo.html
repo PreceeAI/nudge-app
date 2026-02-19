@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Algorithm — Nudge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
+    /* ── PAGE HERO ───────────────────────────────────────────── */
+    .algo-hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 100px 48px 72px;
+      text-align: center;
+    }
+
+    .algo-hero .eyebrow { margin-bottom: 20px; }
+
+    .algo-hero__title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 4vw, 3.4rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 24px;
+    }
+
+    .algo-hero__title em { color: var(--accent); font-style: italic; }
+
+    .algo-hero__sub {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
+
+    /* ── SECTION WRAPPER ─────────────────────────────────────── */
+    .algo-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 72px 48px;
+    }
+
+    .algo-section + .algo-section {
+      border-top: 1px solid var(--border);
+    }
+
+    .algo-section__eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .algo-section__title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.7rem, 2.5vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+
+    .algo-section__sub {
+      font-size: 0.97rem;
+      color: var(--text-muted);
+      max-width: 580px;
+      line-height: 1.7;
+      margin-bottom: 52px;
+    }
+
+    /* ── TIME-OF-DAY TIMELINE ────────────────────────────────── */
+    .timeline-bar {
+      display: flex;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      height: 10px;
+      margin-bottom: 36px;
+      gap: 3px;
+    }
+
+    .timeline-seg {
+      border-radius: 4px;
+      transition: opacity var(--transition);
+    }
+
+    .timeline-seg--morning   { background: #F4C97A; flex: 37; }
+    .timeline-seg--afternoon { background: #E8876A; flex: 42; }
+    .timeline-seg--night     { background: #9B8EC4; flex: 21; }
+
+    /* Three slot cards */
+    .slot-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .slot-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slot-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+
+    .slot-card--morning::before   { background: #F4C97A; }
+    .slot-card--afternoon::before { background: #E8876A; }
+    .slot-card--night::before     { background: #9B8EC4; }
+
+    .slot-card__time {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .slot-card--morning   .slot-card__time { color: #F4C97A; }
+    .slot-card--afternoon .slot-card__time { color: #E8876A; }
+    .slot-card--night     .slot-card__time { color: #9B8EC4; }
+
+    .slot-card__name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .slot-card__desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .slot-card__delivers {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .slot-card__delivers li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .deliver-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .slot-card--morning   .deliver-dot { background: #F4C97A; }
+    .slot-card--afternoon .deliver-dot { background: #E8876A; }
+    .slot-card--night     .deliver-dot { background: #9B8EC4; }
+
+    .slot-card__big-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      opacity: 0.06;
+      position: absolute;
+      bottom: 20px;
+      right: 24px;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* ── WEEKLY RHYTHM BAR CHART ─────────────────────────────── */
+    .week-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      height: 280px;
+      padding-bottom: 8px;
+    }
+
+    .week-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .week-col__bar-wrap {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .week-col__bar {
+      width: 100%;
+      border-radius: 8px 8px 0 0;
+      transition: opacity var(--transition);
+      position: relative;
+    }
+
+    .week-col__bar:hover { opacity: 0.85; }
+
+    .week-col__day {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .week-col__energy {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.3;
+      opacity: 0.7;
+    }
+
+    /* Chart x-axis line */
+    .week-chart-wrap {
+      position: relative;
+    }
+
+    .week-chart-wrap::after {
+      content: '';
+      position: absolute;
+      bottom: 57px;
+      left: 0; right: 0;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── THEMES GRID ─────────────────────────────────────────── */
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+
+    .theme-tile {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .theme-tile__name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: lowercase;
+    }
+
+    .theme-tile__desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── HOW IT WORKS STEPS ──────────────────────────────────── */
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      counter-reset: steps;
+    }
+
+    .how-step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      counter-increment: steps;
+    }
+
+    .how-step::before {
+      content: counter(steps, decimal-leading-zero);
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 0.5;
+      line-height: 1;
+    }
+
+    .how-step__title {
+      font-size: 0.97rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .how-step__desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .slot-cards   { grid-template-columns: 1fr; }
+      .themes-grid  { grid-template-columns: repeat(3, 1fr); }
+      .how-steps    { grid-template-columns: 1fr 1fr; }
+      .week-chart   { height: 200px; gap: 10px; }
+    }
+
+    @media (max-width: 768px) {
+      .algo-hero    { padding: 64px 20px 48px; }
+      .algo-section { padding: 52px 20px; }
+      .themes-grid  { grid-template-columns: 1fr 1fr; }
+      .how-steps    { grid-template-columns: 1fr; }
+      .week-col__energy { display: none; }
+      .week-chart   { height: 160px; gap: 6px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- NAV (links back to main page for today/explore/stories) -->
+  <nav class="nav">
+    <div class="nav-left">
+      <a href="index.html" style="text-decoration:none">
+        <span class="nav-wordmark">nudge</span>
+      </a>
+      <span class="nav-tagline">Micro Inspirations, Large Actions</span>
+    </div>
+    <div class="nav-center">
+      <a href="index.html#today"   class="nav-link">today</a>
+      <a href="index.html#explore" class="nav-link">explore</a>
+      <a href="index.html#stories" class="nav-link">stories</a>
+      <a href="algo.html"          class="nav-link" style="color: var(--text)">our algo</a>
+    </div>
+    <div class="nav-right">
+      <a href="index.html">
+        <button class="btn-cta">nudge me today</button>
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="algo-hero">
+    <p class="eyebrow">under the hood</p>
+    <h1 class="algo-hero__title">
+      Our Algorithm<br />
+      <em>Understands You</em>
+    </h1>
+    <p class="algo-hero__sub">
+      The right nudge at the wrong moment is just noise. We built a content system around one insight: what a woman needs to hear at 7am is fundamentally different from what she needs at 7pm — and what she needs on a Monday is nothing like a Sunday.
+    </p>
+  </div>
+
+  <!-- SECTION 1: HOW IT WORKS -->
+  <section class="algo-section">
+    <p class="algo-section__eyebrow">the system</p>
+    <h2 class="algo-section__title">Three Layers, Every Day</h2>
+    <p class="algo-section__sub">
+      Each piece of content is shaped by three things working together: the time of day, the day of the week, and a rotating theme. None of it is random.
+    </p>
+    <div class="how-steps">
+      <div class="how-step">
+        <p class="how-step__title">Time of Day</p>
+        <p class="how-step__desc">Your morning needs fuel. Your afternoon needs honesty. Your night needs release. The app reads your device clock and serves content matched to that moment — automatically, every visit.</p>
+      </div>
+      <div class="how-step">
+        <p class="how-step__title">Day of Week</p>
+        <p class="how-step__desc">Monday has a different emotional weight than Friday. Each day of the week carries a fixed energy — motivating, grounding, reflective — that shapes the tone of everything delivered that day.</p>
+      </div>
+      <div class="how-step">
+        <p class="how-step__title">Rotating Themes</p>
+        <p class="how-step__desc">Five themes cycle across the month — personal identity, health, burnout, financial confidence, social pressure — so no single topic dominates and every area of your life gets a turn.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: TIME OF DAY -->
+  <section class="algo-section">
+    <p class="algo-section__eyebrow">time-of-day rhythm</p>
+    <h2 class="algo-section__title">The Right Nudge at the Right Time</h2>
+    <p class="algo-section__sub">
+      Content is served three times a day. The slot changes automatically — you never need to select it. Each slot delivers exactly three pieces of content, calibrated to that moment in your day.
+    </p>
+
+    <!-- Timeline bar -->
+    <div class="timeline-bar">
+      <div class="timeline-seg timeline-seg--morning"></div>
+      <div class="timeline-seg timeline-seg--afternoon"></div>
+      <div class="timeline-seg timeline-seg--night"></div>
+    </div>
+
+    <!-- Three slot cards -->
+    <div class="slot-cards">
+
+      <div class="slot-card slot-card--morning">
+        <span class="slot-card__time">5am – 12pm</span>
+        <h3 class="slot-card__name">Morning</h3>
+        <p class="slot-card__desc">
+          You're building momentum. Morning content sets the tone — an affirmation to ground you, an action you can do before noon, and a quote from a woman who's been where you are.
+        </p>
+        <ul class="slot-card__delivers">
+          <li><span class="deliver-dot"></span>A grounding affirmation</li>
+          <li><span class="deliver-dot"></span>A micro-action with real impact</li>
+          <li><span class="deliver-dot"></span>A quote from a real woman</li>
+        </ul>
+        <span class="slot-card__big-number">I</span>
+      </div>
+
+      <div class="slot-card slot-card--afternoon">
+        <span class="slot-card__time">12pm – 8pm</span>
+        <h3 class="slot-card__name">Afternoon</h3>
+        <p class="slot-card__desc">
+          The day has happened to you. Afternoon content meets you mid-stream — an honest question to check in with yourself, a second action to take, and permission to be human.
+        </p>
+        <ul class="slot-card__delivers">
+          <li><span class="deliver-dot"></span>A re-centering question</li>
+          <li><span class="deliver-dot"></span>A micro-action with real impact</li>
+          <li><span class="deliver-dot"></span>A permission slip</li>
+        </ul>
+        <span class="slot-card__big-number">II</span>
+      </div>
+
+      <div class="slot-card slot-card--night">
+        <span class="slot-card__time">8pm onwards</span>
+        <h3 class="slot-card__name">Night</h3>
+        <p class="slot-card__desc">
+          The day is done. Night content asks nothing of you — a gentle reflection, a specific gratitude prompt, and a release that lets you put the day down without guilt.
+        </p>
+        <ul class="slot-card__delivers">
+          <li><span class="deliver-dot"></span>A reflection question</li>
+          <li><span class="deliver-dot"></span>A specific gratitude nudge</li>
+          <li><span class="deliver-dot"></span>A release statement</li>
+        </ul>
+        <span class="slot-card__big-number">III</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 3: WEEKLY RHYTHM -->
+  <section class="algo-section">
+    <p class="algo-section__eyebrow">weekly rhythm</p>
+    <h2 class="algo-section__title">Seven Days, Seven Energies</h2>
+    <p class="algo-section__sub">
+      The emotional arc of a week is real. Monday carries ambition. Wednesday needs breathing room. Sunday asks for rest. Every day's content is written to match that energy — not fight it.
+    </p>
+
+    <div class="week-chart-wrap">
+      <div class="week-chart">
+
+        <div class="week-col">
+          <div class="week-col__bar-wrap">
+            <div class="week-col__bar" style="height:90%; background: linear-gradient(180deg, #E8876A 0%, rgba(232,135,106,0.4) 100%);"></div>
+          </div>
+          <span class="week-col__day">Mon</span>
+          <span class="week-col__energy">Motivating</span>
+        </div>
+
+        <div class="week-col">
+          <div class="week-col__bar-wrap">
+            <div class="week-col__bar" style="height:70%; background: linear-gradient(180deg, #7BB8E8 0%, rgba(123,184,232,0.4) 100%);"></div>
+          </div>
+          <span class="week-col__day">Tue</span>
+          <span class="week-col__energy">Learning</span>
+        </div>
+
+        <div class="week-col">
+          <div class="week-col__bar-wrap">
+            <div class="week-col__bar" style="height:54%; background: linear-gradient(180deg, #85C78A 0%, rgba(133,199,138,0.4) 100%);"></div>
+          </div>
+          <span class="week-col__day">Wed</span>
+          <span class="week-col__energy">Grounding</span>
+        </div>
+
+        <div class="week-col">
+          <div class="week-col__bar-wrap">
+            <div class="week-col__bar" style="height:65%; background: linear-gradient(180deg, #E88A9E 0%, rgba(232,138,158,0.4) 100%);"></div>
+          </div>
+          <span class="week-col__day">Thu</span>
+          <span class="week-col__energy">Body & Self</span>
+        </div>
+
+        <div class="week-col">
+          <div class="week-col__bar-wrap">
+            <div class="week-col__bar" style="height:78%; background: linear-gradient(180deg, #F4C97A 0%, rgba(244,201,122,0.4) 100%);"></div>
+          </div>
+          <span class="week-col__day">Fri</span>
+          <span class="week-col__energy">Authentic Living</span>
+        </div>
+
+        <div class="week-col">
+          <div class="week-col__bar-wrap">
+            <div class="week-col__bar" style="height:48%; background: linear-gradient(180deg, #9B8EC4 0%, rgba(155,142,196,0.4) 100%);"></div>
+          </div>
+          <span class="week-col__day">Sat</span>
+          <span class="week-col__energy">Identity & Depth</span>
+        </div>
+
+        <div class="week-col">
+          <div class="week-col__bar-wrap">
+            <div class="week-col__bar" style="height:32%; background: linear-gradient(180deg, #8A7F78 0%, rgba(138,127,120,0.3) 100%);"></div>
+          </div>
+          <span class="week-col__day">Sun</span>
+          <span class="week-col__energy">Rest & Renewal</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: FIVE THEMES -->
+  <section class="algo-section">
+    <p class="algo-section__eyebrow">content themes</p>
+    <h2 class="algo-section__title">Five Themes, No Two Days Alike</h2>
+    <p class="algo-section__sub">
+      These five areas cycle across every month — ensuring that no single theme dominates, and every part of your life gets a nudge.
+    </p>
+
+    <div class="themes-grid">
+
+      <div class="theme-tile">
+        <span class="card-tag tag-personal-identity" style="align-self: flex-start">personal identity</span>
+        <p class="theme-tile__desc">Who you are beyond your roles, titles, and to-do list. What you actually want, separate from what's expected.</p>
+      </div>
+
+      <div class="theme-tile">
+        <span class="card-tag tag-health-body" style="align-self: flex-start">health & body</span>
+        <p class="theme-tile__desc">Your relationship with your body — not as a project to fix, but as the instrument that carries you through everything.</p>
+      </div>
+
+      <div class="theme-tile">
+        <span class="card-tag tag-burnout" style="align-self: flex-start">burnout</span>
+        <p class="theme-tile__desc">Recognising it before it breaks you. Recovering without guilt. Protecting yourself so you can keep showing up.</p>
+      </div>
+
+      <div class="theme-tile">
+        <span class="card-tag tag-financial" style="align-self: flex-start">financial</span>
+        <p class="theme-tile__desc">Money confidence built one small concept at a time. No shame, no jargon — just the knowledge you deserve to have.</p>
+      </div>
+
+      <div class="theme-tile">
+        <span class="card-tag tag-social" style="align-self: flex-start">social pressure</span>
+        <p class="theme-tile__desc">The gap between who you perform for the world and who you actually are. Closing it, one honest choice at a time.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p class="footer-logo">nudge</p>
+    <p class="footer-tagline">Micro Inspirations, Large Actions</p>
+    <p class="footer-copy">&copy; 2026 Nudge. Made with courage.</p>
+  </footer>
+
+</body>
+</html>

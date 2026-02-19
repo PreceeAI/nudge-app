@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nudge — Micro Inspirations, Large Actions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-left">
+      <span class="nav-wordmark">nudge</span>
+      <span class="nav-tagline">Micro Inspirations, Large Actions</span>
+    </div>
+    <div class="nav-center">
+      <a href="#today" class="nav-link">today</a>
+      <a href="#explore" class="nav-link">explore</a>
+      <a href="#stories" class="nav-link">stories</a>
+      <a href="algo.html" class="nav-link">our algo</a>
+    </div>
+    <div class="nav-right">
+      <button class="btn-cta" id="nav-nudge-btn">nudge me today</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="eyebrow">for women ready to grow</p>
+      <h1 class="hero-headline">
+        Micro Inspirations.<br />
+        <em class="coral">Large Actions.</em><br />
+        Starting now.
+      </h1>
+      <p class="hero-subtitle">
+        One tiny, doable action delivered three times a day — morning, afternoon, and night. Built on real stories from real women.
+      </p>
+      <div class="hero-buttons">
+        <button class="btn-primary" id="nudge-me-btn">nudge me today</button>
+        <button class="btn-ghost" id="explore-btn">explore actions</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="float-card float-card--1">
+        <span class="card-tag tag-burnout">burnout</span>
+        <p>Close one browser tab that's been open for a week. Decide it's done.</p>
+        <span class="card-time">1 min</span>
+      </div>
+      <div class="float-card float-card--2">
+        <span class="card-tag tag-financial">financial</span>
+        <p>Look up one investing term you've been quietly avoiding.</p>
+        <span class="card-time">5 min</span>
+      </div>
+      <div class="float-card float-card--3">
+        <span class="card-tag tag-personal-identity">personal identity</span>
+        <p>Write down who you are beyond your job title. One sentence.</p>
+        <span class="card-time">3 min</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TODAY'S NUDGE -->
+  <section class="todays-nudge" id="today">
+    <div class="today-inner">
+
+      <div class="section-header">
+        <div class="today-header-row">
+          <div>
+            <h2 class="section-title">Today's Nudge</h2>
+            <p id="day-context" class="section-sub">Loading today's content...</p>
+          </div>
+          <span id="slot-badge" class="slot-badge">morning</span>
+        </div>
+      </div>
+
+      <!-- Loading state -->
+      <div id="today-loading" class="loading-state">
+        <div class="loading-pulse"></div>
+        <p>Finding your nudge for today...</p>
+      </div>
+
+      <!-- Error state -->
+      <div id="today-error" class="empty-state" style="display:none">
+        <p class="empty-title">Content unavailable</p>
+        <p class="empty-sub">Make sure content.json is in the same folder as index.html, or run the generator for this month.</p>
+      </div>
+
+      <!-- No matching date -->
+      <div id="today-empty" class="empty-state" style="display:none">
+        <p class="empty-title">New content coming soon</p>
+        <p class="empty-sub">This month's content has ended. A fresh month is on its way.</p>
+      </div>
+
+      <!-- Main content (shown when loaded) -->
+      <div id="today-content" class="today-content" style="display:none">
+
+        <!-- Card 1: Affirmation / question -->
+        <div class="today-card" id="today-card-1"></div>
+
+        <!-- Card 2: Micro-action (primary) -->
+        <div class="today-card today-card--action" id="today-card-2"></div>
+
+        <!-- Card 3: Quote / permission slip / release -->
+        <div class="today-card" id="today-card-3"></div>
+
+        <!-- Full-width: Today's inspirational story -->
+        <div id="inspiration-story"></div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EXPLORE -->
+  <section class="micro-actions" id="explore">
+    <div class="section-header">
+      <h2 class="section-title">Explore Actions</h2>
+      <p class="section-sub">Browse by what you need most right now.</p>
+    </div>
+    <div class="filter-pills" id="filter-pills">
+      <button class="pill active" data-filter="all">all</button>
+      <button class="pill" data-filter="personal-identity">personal identity</button>
+      <button class="pill" data-filter="health-body">health & body</button>
+      <button class="pill" data-filter="burnout">burnout</button>
+      <button class="pill" data-filter="financial">financial</button>
+      <button class="pill" data-filter="social">social pressure</button>
+    </div>
+    <div id="explore-loading" class="loading-state loading-state--inline">
+      <div class="loading-pulse"></div>
+    </div>
+    <div class="nudge-grid" id="nudge-grid"></div>
+  </section>
+
+  <!-- STORIES -->
+  <section class="stories" id="stories">
+    <div class="section-header">
+      <h2 class="section-title">Stories</h2>
+      <p class="section-sub">Real women. Real turning points. Real change.</p>
+    </div>
+    <div id="stories-loading" class="loading-state loading-state--inline">
+      <div class="loading-pulse"></div>
+    </div>
+    <div class="stories-grid" id="stories-grid"></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p class="footer-logo">nudge</p>
+    <p class="footer-tagline">Micro Inspirations, Large Actions</p>
+    <p class="footer-copy">&copy; 2026 Nudge. Made with courage.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
